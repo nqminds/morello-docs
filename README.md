@@ -15,7 +15,7 @@ subjectAltName          = @alts
 otherName = 1.3.6.1.5.5.7.8.9;FORMAT:UTF8,UTF8String:测试@overflow.com
 ```
 
-## Run on CheriBSD
+## Run on CheriBSD (purecap)
 
 OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
 
@@ -69,6 +69,62 @@ SSL_connect:TLSv1.3 read server certificate verify
 SSL_connect:SSLv3/TLS read finished
 SSL_connect:SSLv3/TLS write change cipher spec
 In-address space security exception (core dumped)
+```
+
+## Run on CheriBSD (hybrid)
+
+OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+
+### Server run
+```console
+cheribsd$ openssl s_server -accept 3000 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem  -state -verify 1
+
+verify depth is 1
+Using default temp DH parameters
+ACCEPT
+SSL_accept:before SSL initialization
+SSL_accept:before SSL initialization
+SSL_accept:SSLv3/TLS read client hello
+SSL_accept:SSLv3/TLS write server hello
+SSL_accept:SSLv3/TLS write change cipher spec
+SSL_accept:TLSv1.3 write encrypted extensions
+SSL_accept:SSLv3/TLS write certificate request
+SSL_accept:SSLv3/TLS write certificate
+SSL_accept:TLSv1.3 write server certificate verify
+SSL_accept:SSLv3/TLS write finished
+SSL_accept:TLSv1.3 early data
+SSL3 alert write:fatal:decode error
+SSL_accept:error in error
+ERROR
+00204D8500000000:error:0A000126:SSL routines:ssl3_read_n:unexpected eof while reading:ssl/record/rec_layer_s3.c:309:
+shutting down SSL
+CONNECTION CLOSED
+```
+
+### Client run
+```console
+cheribsd$ openssl s_client -connect 127.0.0.1:3000 -key certs/client.key.pem  -cert certs/client.cert.pem -CAfile certs/cacert.pem -state
+
+CONNECTED(00000003)
+SSL_connect:before SSL initialization
+SSL_connect:SSLv3/TLS write client hello
+SSL_connect:SSLv3/TLS write client hello
+SSL_connect:SSLv3/TLS read server hello
+Can't use SSL_get_servername
+SSL_connect:TLSv1.3 read encrypted extensions
+SSL_connect:SSLv3/TLS read server certificate request
+depth=1 C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA
+verify error:num=19:self-signed certificate in certificate chain
+verify return:1
+depth=1 C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA
+verify return:1
+depth=0 C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server
+verify return:1
+SSL_connect:SSLv3/TLS read server certificate
+SSL_connect:TLSv1.3 read server certificate verify
+SSL_connect:SSLv3/TLS read finished
+SSL_connect:SSLv3/TLS write change cipher spec
+Abort trap (core dumped)
 ```
 
 ## Run on Ubuntu 22.04
