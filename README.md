@@ -527,7 +527,7 @@ read R BLOCK
 ```
 
 ## Conclusions
-CheriBSD on UTF8 subject name returns `SSL3 alert write:fatal:decode error`. However, Ubuntu continues with the TLS negotiation. 
+openssl server for CheriBSD on UTF8 subject name fails with `SSL3 alert write:fatal:decode error` in both purecap and hybrid modes, respectively. openssl client for CheriBSD in purecap mode crashes with `In-address space security exception (core dumped)`, whereas in hybrid mode it crashes `Abort trap (core dumped)`. In the case of Ubuntu 22.04 the TLS negations doesn't fail or crash for both the client and the server. 
 
 ## References
 [1] https://github.com/DataDog/security-labs-pocs/tree/main/proof-of-concept-exploits/openssl-punycode-vulnerability/malicious_client
